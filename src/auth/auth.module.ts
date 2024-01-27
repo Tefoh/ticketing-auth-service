@@ -12,6 +12,7 @@ import { SignInController } from './controllers/sign-in/sign-in.controller';
 import { SignUpController } from './controllers/sign-up/sign-up.controller';
 import { SignOutController } from './controllers/sign-out/sign-out.controller';
 import { ConfigModule } from '@nestjs/config';
+import { CurrentUserController } from './controllers/current-user/current-user.controller';
 import authConfig from './config/auth.config';
 
 @Module({
@@ -30,6 +31,11 @@ import authConfig from './config/auth.config';
       provide: PassportInterfaceStrategy,
     },
   ],
-  controllers: [SignInController, SignUpController, SignOutController],
+  controllers: [
+    SignInController,
+    SignUpController,
+    SignOutController,
+    CurrentUserController,
+  ],
 })
 export class AuthModule {}
