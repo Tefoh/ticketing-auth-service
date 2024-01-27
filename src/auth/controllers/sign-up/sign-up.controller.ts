@@ -1,11 +1,26 @@
-import { Controller, Get } from '@nestjs/common';
-import { HashingService } from 'src/hashing/hashing.service';
+import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
+import { AuthService } from 'src/auth/auth.service';
+import { SignUpDto } from 'src/auth/dto/sign-up.dto';
 
 @Controller('sign-up')
 export class SignUpController {
-  constructor(private readonly hash: HashingService) {}
-  @Get()
-  index() {
-    return this.hash.createPassword('test');
+  constructor(private readonly authService: AuthService) {}
+
+  @Post()
+  async signUp(@Body() signUpDto: SignUpDto, @Res() response: Response) {
+    const accessToken = await this.authService.signUp(
+      signUpDto.email,
+      signUpDto.password,
+    );
+
+    response
+      .cookie(...this.authService.jwtCookieParams(accessToken))
+      .status(201)
+      .send({
+        data: {
+          accessToken,
+        },
+      });
   }
 }
