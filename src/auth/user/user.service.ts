@@ -8,11 +8,11 @@ export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   findUser(id: string): Promise<User | undefined> {
-    return this.userModel.findById(id);
+    return this.userModel.findById(id).exec();
   }
 
   findUserByEmail(email: string): Promise<User | undefined> {
-    return this.userModel.findOne({ email });
+    return this.userModel.findOne({ email }).exec();
   }
 
   createUser(email: string, password: string): Promise<User> {
