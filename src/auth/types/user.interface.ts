@@ -3,3 +3,9 @@ export interface UserPayload {
 
   email: string;
 }
+
+export interface JwtAuthPayload {
+  sub: string;
+
+  email: string;
+}

@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from 'src/auth/auth.service';
+import { JwtAuthPayload } from 'src/auth/types/user.interface';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -24,7 +25,7 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     try {
-      const token = await this.jwtService.verify(
+      const token = await this.jwtService.verify<JwtAuthPayload>(
         accessToken,
         this.authService.jwtOptions(),
       );

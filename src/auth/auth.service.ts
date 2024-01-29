@@ -6,6 +6,7 @@ import { ConfigType } from '@nestjs/config';
 import { User } from 'src/schemas/user.schema';
 import { CookieOptions } from 'express';
 import { DuplicateException } from './exceptions/duplicate.exception';
+import { JwtAuthPayload } from './types/user.interface';
 
 @Injectable()
 export class AuthService {
@@ -37,7 +38,7 @@ export class AuthService {
   }
 
   private generateToken(user: User): Promise<string> {
-    const payload = { sub: user._id, email: user.email };
+    const payload: JwtAuthPayload = { sub: user._id, email: user.email };
 
     const options = this.jwtOptions();
 
