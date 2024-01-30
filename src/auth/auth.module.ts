@@ -7,7 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PassportInterfaceStrategy } from './strategies/passport.interface';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
-import { HashingModule } from 'src/hashing/hashing.module';
+import { HashingModule } from '../hashing/hashing.module';
 import { SignInController } from './controllers/sign-in/sign-in.controller';
 import { SignUpController } from './controllers/sign-up/sign-up.controller';
 import { SignOutController } from './controllers/sign-out/sign-out.controller';

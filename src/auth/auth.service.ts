@@ -3,7 +3,7 @@ import { UserService } from './user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import authConfig from './config/auth.config';
 import { ConfigType } from '@nestjs/config';
-import { User } from 'src/schemas/user.schema';
+import { User } from '../schemas/user.schema';
 import { CookieOptions } from 'express';
 import { DuplicateException } from './exceptions/duplicate.exception';
 import { JwtAuthPayload } from './types/user.interface';
