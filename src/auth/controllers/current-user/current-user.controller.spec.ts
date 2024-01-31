@@ -4,7 +4,6 @@ import { UserService } from '../../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from '../../auth.service';
 
-// TODO
 describe('CurrentUserController', () => {
   let controller: CurrentUserController;
 
@@ -14,7 +13,12 @@ describe('CurrentUserController', () => {
       providers: [
         {
           provide: UserService,
-          useValue: () => ({}),
+          useValue: {
+            findUser: () => ({
+              _id: 1,
+              email: 'test@email.com',
+            }),
+          },
         },
         {
           provide: JwtService,
@@ -32,5 +36,16 @@ describe('CurrentUserController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('should get user', async () => {
+    const email = 'test@email.com';
+    const foundedUser = await controller.currentUser({
+      userId: '1',
+      email,
+    });
+
+    expect(foundedUser.email).toBe(email);
+    expect(foundedUser._id).toBe(1);
   });
 });
