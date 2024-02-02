@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SignUpController } from './sign-up.controller';
 import { AuthService } from '../../auth.service';
+import { Response } from 'express';
 
-// TODO
 describe('SignUpController', () => {
   let controller: SignUpController;
 
@@ -12,7 +12,16 @@ describe('SignUpController', () => {
       providers: [
         {
           provide: AuthService,
-          useValue: () => ({}),
+          useValue: {
+            signUp: () => 'accessToken',
+            jwtCookieParams: () => [
+              'access_token',
+              'accessToken',
+              {
+                secret: 'secret',
+              },
+            ],
+          },
         },
       ],
     }).compile();
@@ -22,5 +31,27 @@ describe('SignUpController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('should set cookie', async () => {
+    const statusResponseMock = {
+      send: jest.fn((x) => x),
+    };
+    const cookieResponseMock = {
+      status: jest.fn(() => statusResponseMock),
+    };
+    const responseMock = {
+      cookie: jest.fn(() => cookieResponseMock),
+      status: jest.fn(() => statusResponseMock),
+      send: jest.fn((x) => x),
+    } as unknown as Response;
+    const responseSpy = jest.spyOn(responseMock, 'cookie');
+
+    await controller.signUp(
+      { email: 'email@example.com', password: 'password' },
+      responseMock,
+    );
+
+    expect(responseSpy).toHaveBeenCalled();
   });
 });
