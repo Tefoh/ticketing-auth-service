@@ -7,19 +7,21 @@ import { User } from '../schemas/user.schema';
 import { CookieOptions } from 'express';
 import { DuplicateException } from './exceptions/duplicate.exception';
 import { JwtAuthPayload } from './types/user.interface';
+import { HashingService } from 'src/hashing/hashing.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
+    private readonly hashingService: HashingService,
     @Inject(authConfig.KEY)
     private readonly authConfiguration: ConfigType<typeof authConfig>,
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findUserByEmail(email);
-    if (user && user.password === pass) {
+    if (user && this.hashingService.checkPassword(pass, user.password)) {
       return user;
     }
     return null;
