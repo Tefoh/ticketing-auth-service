@@ -7,7 +7,7 @@ import { User } from '../schemas/user.schema';
 import { CookieOptions } from 'express';
 import { DuplicateException } from './exceptions/duplicate.exception';
 import { JwtAuthPayload } from './types/user.interface';
-import { HashingService } from 'src/hashing/hashing.service';
+import { HashingService } from '../hashing/hashing.service';
 
 @Injectable()
 export class AuthService {

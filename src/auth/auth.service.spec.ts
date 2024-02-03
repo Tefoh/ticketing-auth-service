@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { getConfigToken } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from './user/user.service';
+import { HashingService } from '../hashing/hashing.service';
 
 // TODO
 describe('AuthService', () => {
@@ -18,6 +19,10 @@ describe('AuthService', () => {
         },
         {
           provide: JwtService,
+          useValue: () => ({}),
+        },
+        {
+          provide: HashingService,
           useValue: () => ({}),
         },
         {
