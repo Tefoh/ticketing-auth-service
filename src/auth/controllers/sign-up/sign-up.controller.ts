@@ -9,7 +9,7 @@ export class SignUpController {
 
   @Post()
   async signUp(@Body() signUpDto: SignUpDto, @Res() response: Response) {
-    const accessToken = await this.authService.signUp(
+    const { accessToken, user } = await this.authService.signUp(
       signUpDto.email,
       signUpDto.password,
     );
@@ -20,6 +20,10 @@ export class SignUpController {
       .send({
         data: {
           accessToken,
+          user: {
+            id: user._id,
+            email: user.email,
+          },
         },
       });
   }

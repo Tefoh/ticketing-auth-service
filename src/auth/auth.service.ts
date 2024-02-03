@@ -27,11 +27,17 @@ export class AuthService {
     return null;
   }
 
-  async signUp(email: string, password: string): Promise<string> {
+  async signUp(
+    email: string,
+    password: string,
+  ): Promise<{ accessToken: string; user: User }> {
     try {
       const user = await this.usersService.createUser(email, password);
 
-      return this.generateToken(user);
+      return {
+        accessToken: await this.generateToken(user),
+        user,
+      };
     } catch (error) {
       if (error.code === 11000) {
         throw new DuplicateException('Entered email is duplicated.');
@@ -39,7 +45,7 @@ export class AuthService {
     }
   }
 
-  private generateToken(user: User): Promise<string> {
+  generateToken(user: User): Promise<string> {
     const payload: JwtAuthPayload = { sub: user._id, email: user.email };
 
     const options = this.jwtOptions();
