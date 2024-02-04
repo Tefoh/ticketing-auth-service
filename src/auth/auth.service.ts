@@ -8,6 +8,7 @@ import { CookieOptions } from 'express';
 import { DuplicateException } from './exceptions/duplicate.exception';
 import { JwtAuthPayload } from './types/user.interface';
 import { HashingService } from '../hashing/hashing.service';
+import { JwtOptionsType } from './types/jwt.interface';
 
 @Injectable()
 export class AuthService {
@@ -53,7 +54,7 @@ export class AuthService {
     return this.jwtService.signAsync(payload, options);
   }
 
-  jwtOptions() {
+  jwtOptions(): JwtOptionsType {
     return {
       audience: this.authConfiguration.jwt.audience,
       expiresIn: this.authConfiguration.jwt.expiresIn,
