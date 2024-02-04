@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AuthModule } from '../src/auth/auth.module';
-import { rootMongooseTestModule } from '../src/mongoose-test-module.helper';
+import { closeInMongodConnection, rootMongooseTestModule } from '../src/mongoose-test-module.helper';
 import { User } from '../src/schemas/user.schema';
 import { ConfigModule } from '@nestjs/config';
 import authConfig from '../src/auth/config/auth.config';
@@ -42,6 +42,10 @@ describe('SignUpController (e2e)', () => {
     await app.init();
   });
 
+  afterAll(async () => {
+    await closeInMongodConnection();
+  });
+
   it('/api/users/sign-up (Post)', async () => {
     await request(app.getHttpServer()).post('/sign-up').send({}).expect(400);
 
@@ -75,5 +79,21 @@ describe('SignUpController (e2e)', () => {
       expect(error).toBeInstanceOf(DuplicateException);
       expect(error).toHaveProperty('message', 'Entered email is duplicated.');
     }
+  });
+
+  it('/api/users/current-user (GET)', async () => {
+    await request(app.getHttpServer()).get('/current-user').expect(401);
+
+    const response = await request(app.getHttpServer())
+      .post('/sign-up')
+      .send({ email: 'email@example.com', password: 'password' })
+      .expect(201);
+
+    const currentUserResponse = await request(app.getHttpServer())
+      .get('/current-user')
+      .set('Cookie', response.get('Set-Cookie')[0])
+      .expect(200);
+
+    expect(currentUserResponse.body.email).toEqual('email@example.com');
   });
 });
