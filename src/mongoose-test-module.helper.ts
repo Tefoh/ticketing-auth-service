@@ -6,8 +6,8 @@ let mongod: MongoMemoryServer;
 export const rootMongooseTestModule = (options: MongooseModuleOptions = {}) =>
   MongooseModule.forRootAsync({
     useFactory: async () => {
-      const mongo = await MongoMemoryServer.create();
-      const uri = mongo.getUri();
+      mongod = await MongoMemoryServer.create();
+      const uri = mongod.getUri();
       return {
         uri: uri,
         ...options,
