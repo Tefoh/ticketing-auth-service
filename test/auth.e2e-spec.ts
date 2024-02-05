@@ -13,6 +13,9 @@ import * as cookieParser from 'cookie-parser';
 import { AuthService } from '../src/auth/auth.service';
 import { DuplicateException } from '../src/auth/exceptions/duplicate.exception';
 import { Model } from 'mongoose';
+import { HashingModule } from '../src/hashing/hashing.module';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
 
 describe('Auth (e2e)', () => {
   let app: INestApplication;
@@ -27,9 +30,9 @@ describe('Auth (e2e)', () => {
           envFilePath: ['.env'],
           load: [authConfig],
         }),
-        // HashingModule,
-        // PassportModule,
-        // JwtModule,
+        HashingModule,
+        PassportModule,
+        JwtModule,
         rootMongooseTestModule(),
         AuthModule,
       ],
