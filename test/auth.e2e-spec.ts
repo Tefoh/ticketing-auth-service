@@ -27,7 +27,7 @@ describe('Auth (e2e)', () => {
     moduleFixture = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
-          envFilePath: ['.env'],
+          envFilePath: ['.env.testing'],
           load: [authConfig],
         }),
         HashingModule,
