@@ -13,7 +13,13 @@ describe('SignUpController', () => {
         {
           provide: AuthService,
           useValue: {
-            signUp: () => 'accessToken',
+            signUp: () => ({
+              accessToken: 'accessToken',
+              user: {
+                _id: 'random_id',
+                email: 'email@example.com',
+              },
+            }),
             jwtCookieParams: () => [
               'access_token',
               'accessToken',
