@@ -8,7 +8,7 @@ import { CookieOptions } from 'express';
 import { DuplicateException } from './exceptions/duplicate.exception';
 import { JwtAuthPayload } from './types/user.interface';
 import { HashingService } from '../hashing/hashing.service';
-import { JwtOptionsType } from './types/jwt.interface';
+import { JwtCookieParamsType, JwtOptionsType } from './types/jwt.interface';
 
 @Injectable()
 export class AuthService {
@@ -41,7 +41,7 @@ export class AuthService {
       };
     } catch (error) {
       if (error.code === 11000) {
-        throw new DuplicateException('Entered email is duplicated.');
+        throw new DuplicateException('email');
       }
     }
   }
@@ -63,7 +63,7 @@ export class AuthService {
     };
   }
 
-  jwtCookieParams(accessToken: string): [string, string, CookieOptions] {
+  jwtCookieParams(accessToken: string): JwtCookieParamsType {
     return ['access_token', accessToken, this.cookieOptions()];
   }
 
