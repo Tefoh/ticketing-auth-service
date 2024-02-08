@@ -1,5 +1,4 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
-import { Response } from 'express';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { AuthService } from '../../auth.service';
 import { SignUpDto } from '../../dto/sign-up.dto';
 
@@ -8,23 +7,22 @@ export class SignUpController {
   constructor(private readonly authService: AuthService) {}
 
   @Post()
-  async signUp(@Body() signUpDto: SignUpDto, @Res() response: Response) {
+  @HttpCode(201)
+  async signUp(@Body() signUpDto: SignUpDto) {
     const { accessToken, user } = await this.authService.signUp(
       signUpDto.email,
       signUpDto.password,
     );
 
-    response
-      .cookie(...this.authService.jwtCookieParams(accessToken))
-      .status(201)
-      .send({
-        data: {
-          accessToken,
-          user: {
-            id: user._id,
-            email: user.email,
-          },
+    return {
+      'Set-Cookie': this.authService.jwtCookieParams(accessToken),
+      data: {
+        accessToken,
+        user: {
+          id: user._id,
+          email: user.email,
         },
-      });
+      },
+    };
   }
 }
