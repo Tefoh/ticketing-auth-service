@@ -3,6 +3,8 @@ import { CurrentUserController } from './current-user.controller';
 import { UserService } from '../../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from '../../auth.service';
+import { CurrentUserTransformer } from '../../transformers/current-user.transformer';
+import { User } from '../../../schemas/user.schema';
 
 describe('CurrentUserController', () => {
   let controller: CurrentUserController;
@@ -28,6 +30,18 @@ describe('CurrentUserController', () => {
           provide: AuthService,
           useValue: () => ({}),
         },
+        {
+          provide: CurrentUserTransformer,
+          useValue: {
+            toArray: (
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              user: User,
+            ) => ({
+              id: 1,
+              email: 'test@email.com',
+            }),
+          },
+        },
       ],
     }).compile();
 
@@ -45,9 +59,7 @@ describe('CurrentUserController', () => {
       email,
     });
 
-    const userData = foundedUser.toArray();
-
-    expect(userData.email).toBe(email);
-    expect(userData.id).toBe(1);
+    expect(foundedUser.email).toBe(email);
+    expect(foundedUser.id).toBe(1);
   });
 });

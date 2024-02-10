@@ -18,6 +18,8 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from '../src/common/response/response.interceptor';
+import { CurrentUserTransformer } from '../src/auth/transformers/current-user.transformer';
+import { SignUpTransformer } from '../src/auth/transformers/sign-up.transformer';
 
 describe('Auth (e2e)', () => {
   let app: INestApplication;
@@ -43,6 +45,8 @@ describe('Auth (e2e)', () => {
           provide: APP_INTERCEPTOR,
           useClass: ResponseInterceptor,
         },
+        CurrentUserTransformer,
+        SignUpTransformer,
       ],
     }).compile();
 

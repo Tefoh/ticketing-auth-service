@@ -6,7 +6,10 @@ import { SignUpTransformer } from '../../transformers/sign-up.transformer';
 
 @Controller('sign-up')
 export class SignUpController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly transformer: SignUpTransformer,
+  ) {}
 
   @Post()
   @HttpCode(201)
@@ -17,7 +20,7 @@ export class SignUpController {
       signUpDto.password,
     );
 
-    return new SignUpTransformer(
+    return this.transformer.toArray(
       this.authService.jwtCookieParams(accessToken),
       accessToken,
       user,

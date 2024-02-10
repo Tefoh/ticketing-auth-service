@@ -1,3 +1,3 @@
 export abstract class TransformerInterface {
-  abstract toArray();
+  abstract toArray(...props);
 }

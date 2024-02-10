@@ -1,4 +1,9 @@
-import { Controller, Get, UnauthorizedException, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../../guards/jwt-auth/jwt-auth.guard';
 import { CurrentUser } from '../../decorators/current-user/current-user.decorator';
 import { UserService } from '../../user/user.service';
@@ -7,7 +12,10 @@ import { CurrentUserTransformer } from '../../transformers/current-user.transfor
 
 @Controller('current-user')
 export class CurrentUserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly transformer: CurrentUserTransformer,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -18,6 +26,6 @@ export class CurrentUserController {
       throw new UnauthorizedException();
     }
 
-    return new CurrentUserTransformer(foundedUser);
+    return this.transformer.toArray(foundedUser);
   }
 }

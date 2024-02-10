@@ -1,16 +1,14 @@
+import { Injectable } from '@nestjs/common';
 import { TransformerInterface } from '../../common/interfaces/transformer.interface';
 import { User } from '../../schemas/user.schema';
 import { CurrentUserResponseType } from '../types/user.interface';
 
+@Injectable()
 export class CurrentUserTransformer extends TransformerInterface {
-  constructor(private readonly user: User) {
-    super();
-  }
-
-  toArray(): CurrentUserResponseType {
+  toArray(user: User): CurrentUserResponseType {
     return {
-      id: this.user._id,
-      email: this.user.email,
+      id: user._id,
+      email: user.email,
     };
   }
 }
