@@ -1,3 +1,7 @@
 export interface HttpExceptionResponseType {
-  [key: string]: string[];
+  message: string;
+  status: number;
+  errors?: {
+    [key: string]: string[];
+  };
 }

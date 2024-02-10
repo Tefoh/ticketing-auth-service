@@ -12,9 +12,15 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors: ValidationError[]) => {
-        const errorsResponse: HttpExceptionResponseType = {};
+        const errorsResponse: HttpExceptionResponseType = {
+          message: 'Some fields have issues!',
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {},
+        };
         errors.forEach((error) => {
-          errorsResponse[error.property] = Object.values(error.constraints);
+          errorsResponse.errors[error.property] = Object.values(
+            error.constraints,
+          );
         });
 
         return new HttpException(
