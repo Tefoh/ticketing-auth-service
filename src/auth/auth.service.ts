@@ -5,7 +5,7 @@ import authConfig from './config/auth.config';
 import { ConfigType } from '@nestjs/config';
 import { User } from '../schemas/user.schema';
 import { CookieOptions } from 'express';
-import { DuplicateException } from './exceptions/duplicate.exception';
+import { DuplicateException } from '../common/exceptions/duplicate.exception';
 import { JwtAuthPayload } from './types/user.interface';
 import { HashingService } from '../hashing/hashing.service';
 import { JwtCookieParamsType, JwtOptionsType } from './types/jwt.interface';
