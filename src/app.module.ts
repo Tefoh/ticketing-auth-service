@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { HashingModule } from './hashing/hashing.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { HashingModule } from './hashing/hashing.module';
     ConfigModule.forRoot(),
     AuthModule,
     HashingModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService],

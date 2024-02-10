@@ -9,3 +9,11 @@ export interface JwtAuthPayload {
 
   email: string;
 }
+
+export interface CurrentUserResponseType {
+  data: {
+    id: string;
+
+    email: string;
+  };
+}

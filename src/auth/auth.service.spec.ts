@@ -7,7 +7,7 @@ import { HashingService } from '../hashing/hashing.service';
 import { JwtAuthPayload } from './types/user.interface';
 import { JwtOptionsType } from './types/jwt.interface';
 import { User } from '../schemas/user.schema';
-import { DuplicateException } from './exceptions/duplicate.exception';
+import { DuplicateException } from '../common/exceptions/duplicate.exception';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -24,7 +24,7 @@ describe('AuthService', () => {
               password: string = 'password',
             ) => {
               if (email === 'duplicated@test.com') {
-                throw new DuplicateException();
+                throw new DuplicateException('email');
               }
 
               return {
