@@ -15,8 +15,10 @@ describe('CurrentUserController', () => {
           provide: UserService,
           useValue: {
             findUser: () => ({
-              _id: 1,
-              email: 'test@email.com',
+              data: {
+                id: 1,
+                email: 'test@email.com',
+              },
             }),
           },
         },
@@ -45,7 +47,7 @@ describe('CurrentUserController', () => {
       email,
     });
 
-    expect(foundedUser.email).toBe(email);
-    expect(foundedUser._id).toBe(1);
+    expect(foundedUser.data.email).toBe(email);
+    expect(foundedUser.data.id).toBe(1);
   });
 });

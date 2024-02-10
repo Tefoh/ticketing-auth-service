@@ -1,6 +1,7 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, UseFilters } from '@nestjs/common';
 import { AuthService } from '../../auth.service';
 import { SignUpDto } from '../../dto/sign-up.dto';
+import { DuplicateExceptionFilter } from '../../../common/filters/duplicate-exception.filter.ts/duplicate-exception.filter';
 
 @Controller('sign-up')
 export class SignUpController {
@@ -8,6 +9,7 @@ export class SignUpController {
 
   @Post()
   @HttpCode(201)
+  @UseFilters(new DuplicateExceptionFilter())
   async signUp(@Body() signUpDto: SignUpDto) {
     const { accessToken, user } = await this.authService.signUp(
       signUpDto.email,
@@ -16,12 +18,10 @@ export class SignUpController {
 
     return {
       'Set-Cookie': this.authService.jwtCookieParams(accessToken),
-      data: {
-        accessToken,
-        user: {
-          id: user._id,
-          email: user.email,
-        },
+      accessToken,
+      user: {
+        id: user._id,
+        email: user.email,
       },
     };
   }

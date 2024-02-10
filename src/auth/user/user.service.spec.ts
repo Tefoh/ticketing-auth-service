@@ -74,7 +74,8 @@ describe('UserService', () => {
     const findMockUser = mockUser('test@email.com', 'password', 'random');
     const foundedUser = await service.findUser('random');
 
-    expect(foundedUser).toEqual(findMockUser);
+    expect(foundedUser.data.id).toEqual(findMockUser._id);
+    expect(foundedUser.data.email).toEqual(findMockUser.email);
   });
 
   it('should get by email', async () => {

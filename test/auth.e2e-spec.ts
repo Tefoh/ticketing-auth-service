@@ -11,11 +11,13 @@ import { ConfigModule } from '@nestjs/config';
 import authConfig from '../src/auth/config/auth.config';
 import * as cookieParser from 'cookie-parser';
 import { AuthService } from '../src/auth/auth.service';
-import { DuplicateException } from '../src/auth/exceptions/duplicate.exception';
+import { DuplicateException } from '../src/common/exceptions/duplicate.exception';
 import { Model } from 'mongoose';
 import { HashingModule } from '../src/hashing/hashing.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ResponseInterceptor } from '../src/common/response/response.interceptor';
 
 describe('Auth (e2e)', () => {
   let app: INestApplication;
@@ -35,6 +37,12 @@ describe('Auth (e2e)', () => {
         JwtModule,
         rootMongooseTestModule(),
         AuthModule,
+      ],
+      providers: [
+        {
+          provide: APP_INTERCEPTOR,
+          useClass: ResponseInterceptor,
+        },
       ],
     }).compile();
 
@@ -82,9 +90,11 @@ describe('Auth (e2e)', () => {
       expect(user.email).toEqual(response.body.data.user.email);
 
       try {
-        await request(app.getHttpServer())
+        const signUpResponse = await request(app.getHttpServer())
           .post('/sign-up')
           .send({ email: 'email@example.com', password: 'password' });
+
+        expect(signUpResponse.statusCode).toEqual(422);
       } catch (error) {
         expect(error).toBeInstanceOf(DuplicateException);
         expect(error).toHaveProperty('message', 'Entered email is duplicated.');
@@ -106,7 +116,7 @@ describe('Auth (e2e)', () => {
         .set('Cookie', response.get('Set-Cookie')[0])
         .expect(200);
 
-      expect(currentUserResponse.body.email).toEqual('email@example.com');
+      expect(currentUserResponse.body.data.email).toEqual('email@example.com');
     });
   });
 });
