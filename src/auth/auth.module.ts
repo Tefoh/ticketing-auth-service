@@ -14,6 +14,8 @@ import { SignOutController } from './controllers/sign-out/sign-out.controller';
 import { ConfigModule } from '@nestjs/config';
 import { CurrentUserController } from './controllers/current-user/current-user.controller';
 import authConfig from './config/auth.config';
+import { CurrentUserTransformer } from './transformers/current-user.transformer';
+import { SignUpTransformer } from './transformers/sign-up.transformer';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import authConfig from './config/auth.config';
       useClass: LocalStrategy,
       provide: PassportInterfaceStrategy,
     },
+    CurrentUserTransformer,
+    SignUpTransformer,
   ],
   controllers: [
     SignInController,

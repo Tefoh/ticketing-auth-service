@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Response } from 'express';
 import { JwtCookieParamsType } from '../../auth/types/jwt.interface';
+import { TransformerInterface } from '../interfaces/transformer.interface';
 
 @Injectable()
 export class ResponseInterceptor implements NestInterceptor {

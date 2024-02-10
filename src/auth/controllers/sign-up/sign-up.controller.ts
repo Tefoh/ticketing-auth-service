@@ -2,10 +2,14 @@ import { Body, Controller, HttpCode, Post, UseFilters } from '@nestjs/common';
 import { AuthService } from '../../auth.service';
 import { SignUpDto } from '../../dto/sign-up.dto';
 import { DuplicateExceptionFilter } from '../../../common/filters/duplicate-exception.filter.ts/duplicate-exception.filter';
+import { SignUpTransformer } from '../../transformers/sign-up.transformer';
 
 @Controller('sign-up')
 export class SignUpController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly transformer: SignUpTransformer,
+  ) {}
 
   @Post()
   @HttpCode(201)
@@ -16,13 +20,10 @@ export class SignUpController {
       signUpDto.password,
     );
 
-    return {
-      'Set-Cookie': this.authService.jwtCookieParams(accessToken),
+    return this.transformer.toArray(
+      this.authService.jwtCookieParams(accessToken),
       accessToken,
-      user: {
-        id: user._id,
-        email: user.email,
-      },
-    };
+      user,
+    );
   }
 }
