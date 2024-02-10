@@ -15,10 +15,8 @@ describe('CurrentUserController', () => {
           provide: UserService,
           useValue: {
             findUser: () => ({
-              data: {
-                id: 1,
-                email: 'test@email.com',
-              },
+              _id: 1,
+              email: 'test@email.com',
             }),
           },
         },
@@ -47,7 +45,9 @@ describe('CurrentUserController', () => {
       email,
     });
 
-    expect(foundedUser.data.email).toBe(email);
-    expect(foundedUser.data.id).toBe(1);
+    const userData = foundedUser.toArray();
+
+    expect(userData.email).toBe(email);
+    expect(userData.id).toBe(1);
   });
 });

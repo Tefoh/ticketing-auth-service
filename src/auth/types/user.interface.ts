@@ -11,9 +11,7 @@ export interface JwtAuthPayload {
 }
 
 export interface CurrentUserResponseType {
-  data: {
-    id: string;
+  id: string;
 
-    email: string;
-  };
+  email: string;
 }

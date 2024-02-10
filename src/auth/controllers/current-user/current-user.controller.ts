@@ -1,8 +1,9 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../../guards/jwt-auth/jwt-auth.guard';
 import { CurrentUser } from '../../decorators/current-user/current-user.decorator';
 import { UserService } from '../../user/user.service';
 import { UserPayload } from '../../types/user.interface';
+import { CurrentUserTransformer } from '../../transformers/current-user.transformer';
 
 @Controller('current-user')
 export class CurrentUserController {
@@ -10,7 +11,13 @@ export class CurrentUserController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  currentUser(@CurrentUser() user: UserPayload) {
-    return this.userService.findUser(user.userId);
+  async currentUser(@CurrentUser() user: UserPayload) {
+    const foundedUser = await this.userService.findUser(user.userId);
+
+    if (!foundedUser) {
+      throw new UnauthorizedException();
+    }
+
+    return new CurrentUserTransformer(foundedUser);
   }
 }
