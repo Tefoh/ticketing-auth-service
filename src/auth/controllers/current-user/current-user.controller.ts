@@ -10,7 +10,7 @@ import { CurrentUser } from '../../decorators/current-user/current-user.decorato
 import { UserService } from '../../user/user.service';
 import { UserPayload } from '../../types/user.interface';
 import { CurrentUserTransformer } from '../../transformers/current-user.transformer';
-import { UnauthorizedExceptionFilter } from 'src/auth/filters/unauthorized.exception/unauthorized.exception.filter';
+import { UnauthorizedExceptionFilter } from '../../filters/unauthorized.exception/unauthorized.exception.filter';
 
 @Controller('current-user')
 export class CurrentUserController {
