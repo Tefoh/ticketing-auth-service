@@ -11,6 +11,7 @@ export class SignInTransformer extends TransformerInterface {
 
   toArray(accessToken: string, user: User) {
     return {
+      'Set-Cookie': accessToken,
       accessToken,
       user: this.currentUserTransformer.toArray(user),
     };
