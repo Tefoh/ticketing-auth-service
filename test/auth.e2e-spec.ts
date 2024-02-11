@@ -123,4 +123,37 @@ describe('Auth (e2e)', () => {
       expect(currentUserResponse.body.data.email).toEqual('email@example.com');
     });
   });
+
+  describe('sign in user (E2E Test)', () => {
+    it('/api/users/current-user (GET)', async () => {
+      await request(app.getHttpServer()).get('/current-user').expect(401);
+
+      const email = 'email@example.com';
+      const password = 'password';
+
+      await request(app.getHttpServer())
+        .post('/sign-up')
+        .send({ email, password })
+        .expect(HttpStatus.CREATED);
+
+      const loggedInUser = await request(app.getHttpServer())
+        .post('/sign-in')
+        .send({ email, password })
+        .expect(200);
+
+      expect(loggedInUser.body.data.user.email).toEqual('email@example.com');
+
+      const createdToken = await authService.generateToken({
+        _id: loggedInUser.body.data.user.id,
+        email: 'email@example.com',
+        password: 'password',
+      });
+
+      const splittedCookie = loggedInUser.get('Set-Cookie')[0].split('=');
+
+      expect(loggedInUser.get('Set-Cookie')).toBeDefined();
+      expect(splittedCookie[0]).toEqual('access_token');
+      expect(splittedCookie[1].split('; ')[0]).toEqual(createdToken);
+    });
+  });
 });
