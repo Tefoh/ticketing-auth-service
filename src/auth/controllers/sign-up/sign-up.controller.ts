@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, Post, UseFilters } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseFilters,
+} from '@nestjs/common';
 import { AuthService } from '../../auth.service';
 import { SignUpDto } from '../../dto/sign-up.dto';
 import { DuplicateExceptionFilter } from '../../../common/filters/duplicate-exception.filter.ts/duplicate-exception.filter';
@@ -12,7 +19,7 @@ export class SignUpController {
   ) {}
 
   @Post()
-  @HttpCode(201)
+  @HttpCode(HttpStatus.CREATED)
   @UseFilters(new DuplicateExceptionFilter())
   async signUp(@Body() signUpDto: SignUpDto) {
     const { accessToken, user } = await this.authService.signUp(

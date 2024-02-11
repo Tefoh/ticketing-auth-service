@@ -16,6 +16,7 @@ import { CurrentUserController } from './controllers/current-user/current-user.c
 import authConfig from './config/auth.config';
 import { CurrentUserTransformer } from './transformers/current-user.transformer';
 import { SignUpTransformer } from './transformers/sign-up.transformer';
+import { SignInTransformer } from './transformers/sign-in.transformer';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { SignUpTransformer } from './transformers/sign-up.transformer';
     },
     CurrentUserTransformer,
     SignUpTransformer,
+    SignInTransformer,
   ],
   controllers: [
     SignInController,

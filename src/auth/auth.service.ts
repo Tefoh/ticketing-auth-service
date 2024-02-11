@@ -6,9 +6,13 @@ import { ConfigType } from '@nestjs/config';
 import { User } from '../schemas/user.schema';
 import { CookieOptions } from 'express';
 import { DuplicateException } from '../common/exceptions/duplicate.exception';
-import { JwtAuthPayload } from './types/user.interface';
+import {
+  JwtAuthPayload,
+  ResponseUserWithTokenType,
+} from './types/user.interface';
 import { HashingService } from '../hashing/hashing.service';
 import { JwtCookieParamsType, JwtOptionsType } from './types/jwt.interface';
+import { InvalidCredentialsException } from './exceptions/invalid-credentials.exceptions';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +26,10 @@ export class AuthService {
 
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findUserByEmail(email);
-    if (user && this.hashingService.checkPassword(pass, user.password)) {
+    if (
+      user &&
+      (await this.hashingService.checkPassword(pass, user.password))
+    ) {
       return user;
     }
     return null;
@@ -31,7 +38,7 @@ export class AuthService {
   async signUp(
     email: string,
     password: string,
-  ): Promise<{ accessToken: string; user: User }> {
+  ): Promise<ResponseUserWithTokenType> {
     try {
       const user = await this.usersService.createUser(email, password);
 
@@ -44,6 +51,22 @@ export class AuthService {
         throw new DuplicateException('email');
       }
     }
+  }
+
+  async signIn(
+    email: string,
+    password: string,
+  ): Promise<ResponseUserWithTokenType> {
+    const user = await this.validateUser(email, password);
+
+    if (!user) {
+      throw new InvalidCredentialsException();
+    }
+
+    return {
+      accessToken: await this.generateToken(user),
+      user,
+    };
   }
 
   generateToken(user: User): Promise<string> {

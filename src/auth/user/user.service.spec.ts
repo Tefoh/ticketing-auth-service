@@ -4,6 +4,7 @@ import { Model, Query } from 'mongoose';
 import { User, UserDocument } from '../../schemas/user.schema';
 import { getModelToken } from '@nestjs/mongoose';
 import { createMock } from '@golevelup/ts-jest';
+import { HashingService } from '../../hashing/hashing.service';
 
 const mockUser = (
   email = 'email@example.com',
@@ -41,6 +42,13 @@ describe('UserService', () => {
             create: jest.fn(),
             remove: jest.fn(),
             exec: jest.fn(),
+          },
+        },
+        {
+          provide: HashingService,
+          useValue: {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            createPassword: async (password: string) => 'hashed_password',
           },
         },
       ],
