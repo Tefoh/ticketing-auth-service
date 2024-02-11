@@ -24,7 +24,7 @@ export class SignOutController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @UseFilters(new UnauthorizedExceptionFilter())
-  async currentUser(@CurrentUser() user: UserPayload) {
+  async signOut(@CurrentUser() user: UserPayload) {
     const foundedUser = await this.userService.findUser(user.userId);
 
     if (!foundedUser) {
