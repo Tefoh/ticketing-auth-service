@@ -21,6 +21,13 @@ describe('SignInController', () => {
               email,
               password,
             }),
+            jwtCookieParams: () => [
+              'access_token',
+              'accessToken',
+              {
+                secret: 'secret',
+              },
+            ],
           },
         },
         SignInTransformer,
