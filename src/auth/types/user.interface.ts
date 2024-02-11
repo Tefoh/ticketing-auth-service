@@ -1,3 +1,5 @@
+import { User } from '../../schemas/user.schema';
+
 export interface UserPayload {
   userId: string;
 
@@ -14,4 +16,9 @@ export interface CurrentUserResponseType {
   id: string;
 
   email: string;
+}
+
+export interface ResponseUserWithTokenType {
+  accessToken: string;
+  user: User;
 }
