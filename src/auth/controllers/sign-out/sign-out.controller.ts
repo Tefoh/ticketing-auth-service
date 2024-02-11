@@ -1,5 +1,7 @@
 import {
   Controller,
+  HttpCode,
+  HttpStatus,
   Post,
   UnauthorizedException,
   UseFilters,
@@ -23,6 +25,7 @@ export class SignOutController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
+  @HttpCode(HttpStatus.OK)
   @UseFilters(new UnauthorizedExceptionFilter())
   async signOut(@CurrentUser() user: UserPayload) {
     const foundedUser = await this.userService.findUser(user.userId);
