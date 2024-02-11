@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthService } from '../../auth.service';
 import { UserService } from '../../user/user.service';
 import { SignOutTransformer } from '../../transformers/sign-out.transformer';
+import { UnauthorizedException } from '@nestjs/common';
 
 describe('SignOutController', () => {
   let controller: SignOutController;
@@ -18,11 +19,33 @@ describe('SignOutController', () => {
         },
         {
           provide: AuthService,
-          useValue: {},
+          useValue: {
+            expireJwtCookieParams: () => [
+              'access_token',
+              'token',
+              {
+                secure: true,
+                httpOnly: true,
+                sameSite: 'lax',
+                expires: new Date(null),
+              },
+            ],
+          },
         },
         {
           provide: UserService,
-          useValue: {},
+          useValue: {
+            findUser: (userId: string = '1') => {
+              if (userId !== '1') {
+                throw new UnauthorizedException();
+              }
+
+              return {
+                _id: 1,
+                email: 'test@email.com',
+              };
+            },
+          },
         },
         SignOutTransformer,
       ],
@@ -33,5 +56,28 @@ describe('SignOutController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('should sign out user', async () => {
+    const email = 'test@email.com';
+    const response = await controller.signOut({
+      userId: '1',
+      email,
+    });
+
+    expect(response['Set-Cookie'][0]).toEqual('access_token');
+    expect(response['Set-Cookie'][2].expires).toEqual(new Date(null));
+  });
+
+  it('should get unauthorized exception if user not logged in', async () => {
+    const email = 'test@email.com';
+    try {
+      await controller.signOut({
+        userId: '2',
+        email,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(UnauthorizedException);
+    }
   });
 });
