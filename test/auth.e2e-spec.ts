@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AuthModule } from '../src/auth/auth.module';
 import {
@@ -74,7 +74,7 @@ describe('Auth (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/sign-up')
         .send({ email: 'email@example.com', password: 'password' })
-        .expect(201);
+        .expect(HttpStatus.CREATED);
 
       const createdToken = await authService.generateToken({
         _id: response.body.data.user.id,
@@ -113,7 +113,7 @@ describe('Auth (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/sign-up')
         .send({ email: 'email@example.com', password: 'password' })
-        .expect(201);
+        .expect(HttpStatus.CREATED);
 
       const currentUserResponse = await request(app.getHttpServer())
         .get('/current-user')
