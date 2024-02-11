@@ -1,4 +1,5 @@
 import { User } from '../../schemas/user.schema';
+import { JwtCookieParamsType } from './jwt.interface';
 
 export interface UserPayload {
   userId: string;
@@ -21,4 +22,8 @@ export interface CurrentUserResponseType {
 export interface ResponseUserWithTokenType {
   accessToken: string;
   user: User;
+}
+
+export interface SignOutResponseType {
+  'Set-Cookie': JwtCookieParamsType;
 }

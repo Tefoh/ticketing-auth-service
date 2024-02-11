@@ -20,6 +20,8 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from '../src/common/response/response.interceptor';
 import { CurrentUserTransformer } from '../src/auth/transformers/current-user.transformer';
 import { SignUpTransformer } from '../src/auth/transformers/sign-up.transformer';
+import { SignOutTransformer } from '../src/auth/transformers/sign-out.transformer';
+import { SignInTransformer } from '../src/auth/transformers/sign-in.transformer';
 
 describe('Auth (e2e)', () => {
   let app: INestApplication;
@@ -47,6 +49,8 @@ describe('Auth (e2e)', () => {
         },
         CurrentUserTransformer,
         SignUpTransformer,
+        SignInTransformer,
+        SignOutTransformer,
       ],
     }).compile();
 
@@ -125,7 +129,7 @@ describe('Auth (e2e)', () => {
   });
 
   describe('sign in user (E2E Test)', () => {
-    it('/api/users/current-user (GET)', async () => {
+    it('/api/users/sign-in (POST)', async () => {
       await request(app.getHttpServer()).get('/current-user').expect(401);
 
       const email = 'email@example.com';
@@ -154,6 +158,30 @@ describe('Auth (e2e)', () => {
       expect(loggedInUser.get('Set-Cookie')).toBeDefined();
       expect(splittedCookie[0]).toEqual('access_token');
       expect(splittedCookie[1].split('; ')[0]).toEqual(createdToken);
+    });
+  });
+
+  describe('sign out (E2E Test)', () => {
+    it('/api/users/sign-out (GET)', async () => {
+      await request(app.getHttpServer()).post('/sign-out').expect(401);
+
+      const response = await request(app.getHttpServer())
+        .post('/sign-up')
+        .send({ email: 'email@example.com', password: 'password' })
+        .expect(HttpStatus.CREATED);
+
+      const signOutResponse = await request(app.getHttpServer())
+        .post('/sign-out')
+        .set('Cookie', response.get('Set-Cookie')[0])
+        .expect(200);
+
+      const splittedCookie = signOutResponse.get('Set-Cookie')[0].split('=');
+
+      expect(response.get('Set-Cookie')).toBeDefined();
+      expect(splittedCookie[0]).toEqual('access_token');
+      expect(splittedCookie[3].split(';')[0]).toEqual(
+        'Thu, 01 Jan 1970 00:00:00 GMT',
+      );
     });
   });
 });

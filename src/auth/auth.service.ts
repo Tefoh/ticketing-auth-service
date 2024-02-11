@@ -90,14 +90,18 @@ export class AuthService {
     return ['access_token', accessToken, this.cookieOptions()];
   }
 
-  cookieOptions(): CookieOptions {
+  expireJwtCookieParams(): JwtCookieParamsType {
+    return ['access_token', 'token', this.cookieOptions(true)];
+  }
+
+  cookieOptions(expireCookie = false): CookieOptions {
     return {
       secure: this.authConfiguration.secureCookie,
       httpOnly: true,
       sameSite: 'lax',
-      expires: new Date(
-        Date.now() + this.authConfiguration.jwt.expiresInSeconds,
-      ),
+      expires: expireCookie
+        ? new Date(null)
+        : new Date(Date.now() + this.authConfiguration.jwt.expiresInSeconds),
     };
   }
 }
