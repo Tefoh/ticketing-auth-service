@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { User } from '../../schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { HashingService } from '../../hashing/hashing.service';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private readonly hashService: HashingService,
+  ) {}
 
   async findUser(id: string): Promise<User | undefined> {
     const user = await this.userModel.findById(id).exec();
@@ -16,10 +20,11 @@ export class UserService {
     return this.userModel.findOne({ email }).exec();
   }
 
-  createUser(email: string, password: string): Promise<User> {
+  async createUser(email: string, password: string): Promise<User> {
+    const hashedPassword = await this.hashService.createPassword(password);
     return this.userModel.create({
       email,
-      password,
+      password: hashedPassword,
     });
   }
 }
